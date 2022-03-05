@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ví dụ về Đăng nhập SSO thông qua Keycloak</title>
+</head>
+
+<body>
+    <button onclick="fDangNhap()">
+        Đăng nhập
+    </button>
+
+    <button onclick="fDangXuat()">
+        Đăng xuất
+    </button>
+
+    <p>Thông tin tài khoản</p>
+    <p id="acc"></p>
+</body>
+
+</html>
+
+<script src="/js/keycloak.js"></script>
+<script>
+    var keycloak = new Keycloak({
+        url: '',
+        realm: '',
+        clientId: ''
+    });
+
+    keycloak.init().then(function (authenticated) {
+        alert(authenticated ? 'Đã đăng nhập' : 'Chưa đăng nhập');
+        
+        if(authenticated){
+            document.getElementById("acc").innerText = JSON.stringify(keycloak);
+        }
+
+    }).catch(function () {
+        alert('Khởi tạo lỗi');
+    });
+
+    function fDangNhap() {
+        delete keycloak;
+        keycloak.init({ onLoad: 'login-required' }).then(function () {
+        }).catch(function () { });
+    }
+
+    function fDangXuat() {
+        keycloak.logout({ "redirectUri": "http://sso.local/logout.html" });
+    }
+</script>
